@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<svg width="400px" height="450px"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xhtml="http://www.w3.org/1999/xhtml"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:a="http://www.adobe.com/svg10-extensions" a:timeline="independent"
+     onload="load()">
+
+    <script type="text/javascript">
+    <![CDATA[
+    var OBJECT_NAME = "smiley";
+    var OBJECT_WIDTH = 50;
+    var OBJECT_HEIGHT = 50;
+    var MAX_ANGLE_CHANGE = 30;
+
+    var interval = null;
+    var angle_change;
+    var width, height;
+    var displacement;
+    var isASV = false;
+    var isFF = false;
+
+    function load() {
+        angle_change = 2;
+        width = height = 400;
+
+        displacement = new Object();
+        displacement.x = displacement.y = 5;
+
+        isASV = (window.navigator.appName == "Adobe SVG Viewer");
+        isFF = (window.navigator.appName == "Netscape");
+    }
+
+    function playsnd(id) {
+        if (isASV) {
+            var snd = document.getElementById(id + "_asv");
+            snd.endElement();
+            snd.beginElement();
+        }
+        if (isFF) {
+            var snd = document.getElementById(id);
+            snd.currentTime = 0;
+            snd.play();
+        }
+    }
+
+    function move() {
+        var x, y, angle;
+        var translate, rotate;
+        var object = document.getElementById(OBJECT_NAME);
+
+        if (object == null) return;
+
+        x = parseFloat(object.getAttribute("x"));
+        if (isNaN(x)) x = 0;
+
+        y = parseFloat(object.getAttribute("y"));
+        if (isNaN(y)) y = 0;
+
+        angle = parseFloat(object.getAttribute("angle"));
+        if (isNaN(angle)) angle = 0;
+
+        x += displacement.x;
+        if (x < 0) {
+            x = 0;
+            displacement.x = -displacement.x;
+            angle_change = Math.random() * MAX_ANGLE_CHANGE;
+            playsnd("ding");
+        }
+                
+        if (x > width - OBJECT_WIDTH) {
+            x = width - OBJECT_WIDTH;
+            displacement.x = -displacement.x;
+            angle_change = Math.random() * MAX_ANGLE_CHANGE;
+            playsnd("ding");
+        }
+
+        y += displacement.y;
+        if (y < 0) {
+            y = 0;
+            displacement.y = -displacement.y;
+            angle_change = Math.random() * MAX_ANGLE_CHANGE;
+            playsnd("ding");
+        }
+                        
+        if (y > height - OBJECT_HEIGHT) {
+            y = height - OBJECT_HEIGHT;
+            displacement.y = -displacement.y;
+            angle_change = Math.random() * MAX_ANGLE_CHANGE;
+            playsnd("ding");
+        }
+
+        angle = (angle + angle_change) % 360;
+
+        object.setAttribute("x", x);
+        object.setAttribute("y", y);
+        object.setAttribute("angle", angle);
+        // Add the code to translate and rotate here!
+        translate = "translate(" + x + "," + y + ") ";
+        rotate = "rotate(" + angle + "," +  OBJECT_WIDTH/2 + "," + OBJECT_HEIGHT/2 + ")"; 
+        object.setAttribute("transform", translate + rotate);
+
+    }
+
+    function startball() {
+        // Setup a new interval
+        if (interval != null) clearInterval(interval);
+        interval = setInterval("move()", 50);
+    }
+
+    function stopball() {
+        // Clear the interval
+        if (interval != null) {
+            clearInterval(interval);
+            interval = null;
+        }
+    }
+
+    function randomize() {
+        // Change the displacement by Math.random()
+        displacement.x = Math.random() * 100 - 50;
+        displacement.y = Math.random() * 100 - 50;
+    }
+    ]]>
+    </script>
+
+    <style type="text/css">
+    <![CDATA[
+    .background { fill: lightblue; stroke: darkblue; stroke-width: 2; }
+    .button { cursor: pointer; }
+    .button rect { fill: lightgray; }
+    .button:hover rect { fill: #f0f0f0; stroke: lightgray; stroke-width: 1; }
+    .button text { font-size:15px; font-weight:bold; text-anchor:middle; }
+    ]]>
+    </style>
+
+
+    <!-- Add your audio tag here -->
+    <xhtml:audio id="ding" src="ding.wav" begin="indefinite"/>
+
+    <rect x="1" y="1" width="398px" height="398px" class="background"/>
+
+
+    <!-- Add your webdraw object here -->
+    <g id="smiley">
+        <defs>
+            <filter id="Bevel" filterUnits="objectBoundingBox" x="-10%" y="-10%"
+                width="150%" height="150%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+                <feSpecularLighting in="blur" surfaceScale="5" specularConstant="0.5"
+                    specularExponent="10" result="specOut"
+                    style="lighting-color:rgb(155,19,19)">
+                    <fePointLight x="-5000" y="-10000" z="20000"/>
+                </feSpecularLighting>
+                <feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut2"/>
+                <feComposite in="SourceGraphic" in2="specOut2" operator="arithmetic" k1="0"
+                    k2="1" k3="1" k4="0" result="litPaint"/>
+            </filter>
+        </defs>
+        <ellipse cx="226" cy="182" rx="124" ry="124"
+            style="fill:rgb(255,255,0);stroke:rgb(0,0,0);stroke-width:10"
+            transform="translate(102 58) scale(0.294355 0.294355) translate(-102 -58) translate(102 58) scale(0.863014 0.863014) translate(-102 -58) translate(102 58) scale(0.84127 0.84127) translate(-102 -58) translate(102 58) scale(0.603774 0.603774) translate(-102 -58) translate(-682 -382.333) translate(-90.4167 -45.2083) translate(102 58) scale(1.21875 1.21875) translate(-102 -58) translate(21.1966 12.7179) translate(-6.35897 0) translate(-24.3761 -26.4957) translate(102 58) scale(1.23077 1.23077) translate(-102 -58)"
+            />
+        <ellipse cx="170" cy="169" rx="43" ry="43"
+            transform="translate(-2.1978 -5.49451) translate(104.198 63.4945) scale(0.294355 0.294355) translate(-104.198 -63.4945) translate(104.198 63.4945) scale(0.863014 0.863014) translate(-104.198 -63.4945) translate(104.198 63.4945) scale(0.84127 0.84127) translate(-104.198 -63.4945) translate(104.198 63.4945) scale(0.603774 0.603774) translate(-104.198 -63.4945) translate(-682 -382.333) translate(-90.4167 -45.2083) translate(104.198 63.4945) scale(1.21875 1.21875) translate(-104.198 -63.4945) translate(21.1966 12.7179) translate(-6.35897 0) translate(-24.3761 -26.4957) translate(104.198 63.4945) scale(1.23077 1.23077) translate(-104.198 -63.4945)"
+            
+            style="fill:rgb(0,0,0);stroke:rgb(0,0,0);stroke-width:10"/>
+        <ellipse cx="251" cy="251" rx="43" ry="43"
+            transform="translate(23.0769 -78.022) translate(1.0989 -4.3956) translate(-2.1978 -5.49451) translate(80.022 145.912) scale(0.294355 0.294355) translate(-80.022 -145.912) translate(80.022 145.912) scale(0.863014 0.863014) translate(-80.022 -145.912) translate(80.022 145.912) scale(0.84127 0.84127) translate(-80.022 -145.912) translate(80.022 145.912) scale(0.603774 0.603774) translate(-80.022 -145.912) translate(-682 -382.333) translate(-90.4167 -45.2083) translate(80.022 145.912) scale(1.21875 1.21875) translate(-80.022 -145.912) translate(21.1966 12.7179) translate(-6.35897 0) translate(-24.3761 -26.4957) translate(80.022 145.912) scale(1.23077 1.23077) translate(-80.022 -145.912)"
+            
+            style="fill:rgb(0,0,0);stroke:rgb(0,0,0);stroke-width:10"/>
+        <ellipse cx="229.401" cy="250.593" rx="59.5" ry="3"
+            transform="translate(-3.2967 -1.0989) translate(229.401 247.593) scale(1 2.4652) translate(-229.401 -247.593) translate(-4.3956 -0.445765) translate(229.401 247.593) scale(1 1.74294) translate(-229.401 -247.593) translate(4.3956 -1.79028) translate(229.401 247.593) scale(1 0.488491) translate(-229.401 -247.593) translate(0 2.6178) translate(-9.89011 -1.04712) translate(5.49451 0) translate(0 0.47644) translate(0 0.47644) translate(1 0) translate(108.692 159.452) scale(0.294355 0.294355) translate(-108.692 -159.452) translate(108.692 159.452) scale(0.863014 0.863014) translate(-108.692 -159.452) translate(108.692 159.452) scale(0.84127 0.84127) translate(-108.692 -159.452) translate(108.692 159.452) scale(0.603774 0.603774) translate(-108.692 -159.452) translate(-682 -182.159) translate(-90.4167 -21.5391) translate(108.692 159.452) scale(1.21875 1.21875) translate(-108.692 -159.452) translate(21.1966 6.05935) translate(-6.35897 0) translate(-24.3761 -12.6236) translate(108.692 159.452) scale(1.23077 1.23077) translate(-108.692 -159.452)"
+            
+            style="fill:rgb(0,0,0);stroke:rgb(0,0,0);stroke-width:10;filter:url(#Bevel)"/>
+        <path
+            d="M168.773 170.727 C167.543 170.727 166.545 170.727 166.545 170.727 C166.545 173.187
+                167.543 175.182 168.773 175.182 C172.463 175.182 175.455 173.187 175.455 170.727
+                C175.455 165.807 172.463 161.818 168.773 161.818 C162.622 161.818 157.636
+                165.807 157.636 170.727 C157.636 178.108 162.622 184.091 168.773 184.091 C177.383
+                184.091 184.364 178.108 184.364 170.727 C184.364 160.887 177.383 152.909
+                168.773 152.909 C157.702 152.909 148.727 160.887 148.727 170.727 C148.727
+                183.028 157.702 193 168.773 193 C182.304 193 193.273 183.028 193.273 170.727
+                C193.273 155.966 182.304 144 168.773 144"
+            transform="translate(-3.2967 -4.3956) translate(100 0) translate(9.89011 0) translate(-6.59341 0) translate(148.727 144) scale(1.10204 1.10204) translate(-148.727 -144) translate(0 -0.907407) translate(0 -0.907407) translate(0 -0.907407) translate(15.5857 72.6737) scale(0.294355 0.294355) translate(-15.5857 -72.6737) translate(15.5857 72.6737) scale(0.863014 0.863014) translate(-15.5857 -72.6737) translate(15.5857 72.6737) scale(0.84127 0.84127) translate(-15.5857 -72.6737) translate(15.5857 72.6737) scale(0.603774 0.603774) translate(-15.5857 -72.6737) translate(-618.852 -346.932) translate(-82.0448 -41.0224) translate(15.5857 72.6737) scale(1.21875 1.21875) translate(-15.5857 -72.6737) translate(19.2339 11.5404) translate(-5.77018 0) translate(-22.119 -24.0424) translate(15.5857 72.6737) scale(1.23077 1.23077) translate(-15.5857 -72.6737)"
+            
+            style="stroke:rgb(192,192,192);stroke-width:5"/>
+        <path
+            d="M166.455 182.545 C165.049 182.545 163.909 182.545 163.909 182.545 C163.909 185.357
+                165.049 187.636 166.455 187.636 C170.672 187.636 174.091 185.357 174.091 182.545
+                C174.091 176.922 170.672 172.364 166.455 172.364 C159.426 172.364 153.727
+                176.922 153.727 182.545 C153.727 190.98 159.426 197.818 166.455 197.818 C176.295
+                197.818 184.273 190.98 184.273 182.545 C184.273 171.299 176.295 162.182
+                166.455 162.182 C153.802 162.182 143.545 171.299 143.545 182.545 C143.545 196.603
+                153.802 208 166.455 208 C181.918 208 194.455 196.603 194.455 182.545 C194.455
+                165.676 181.918 152 166.455 152"
+            transform="translate(-4.3956 -15.3846) translate(0 -1) translate(0 -1) translate(0 -1) translate(1 0) translate(105.396 76.3846) scale(0.294355 0.294355) translate(-105.396 -76.3846) translate(105.396 76.3846) scale(0.863014 0.863014) translate(-105.396 -76.3846) translate(105.396 76.3846) scale(0.84127 0.84127) translate(-105.396 -76.3846) translate(105.396 76.3846) scale(0.603774 0.603774) translate(-105.396 -76.3846) translate(-682 -382.333) translate(-90.4167 -45.2083) translate(105.396 76.3846) scale(1.21875 1.21875) translate(-105.396 -76.3846) translate(21.1966 12.7179) translate(-6.35897 0) translate(-24.3761 -26.4957) translate(105.396 76.3846) scale(1.23077 1.23077) translate(-105.396 -76.3846)"
+            
+            style="stroke:rgb(192,192,192);stroke-width:5"/>
+
+    </g>
+
+
+    <g transform="translate(30,405)" class="button" onclick="startball()">
+        <rect rx="10" ry="10" width="100" height="40"/>
+        <text x="50" y="25">Start</text>
+    </g>
+
+    <g transform="translate(150,405)" class="button" onclick="stopball()">
+        <rect rx="10" ry="10" width="100" height="40"/>
+        <text x="50" y="25">Stop</text>
+    </g>
+
+    <g transform="translate(270,405)" class="button" onclick="randomize()">
+        <rect rx="10" ry="10" width="100" height="40"/>
+        <text x="50" y="25">Randomize</text>
+    </g>
+
+</svg>
